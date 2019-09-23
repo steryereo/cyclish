@@ -1,0 +1,9 @@
+extends layout
+
+block layout-content
+  if user
+    h2 Hello, #{user.displayName}
+    a(href="/activities") See activities
+  else
+    p Welcome!
+      a(href="/auth/strava") Login with Strava
