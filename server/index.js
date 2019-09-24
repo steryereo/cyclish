@@ -79,10 +79,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.get('/api/', ensureAuthenticated, (req, res) => {
-//   res.send(mockResponse);
-// });
-
 app.get('/', ensureAuthenticated, (req, res) => {
   res.sendFile(HTML_FILE);
 });
@@ -92,14 +88,15 @@ app.get('/login', function(req, res){
 });
 
 app.get('/api/activities', ensureAuthenticated, function(req, res) {
-  strava.athlete.listActivities({access_token: req.user.token}, (err, payload, limits) => {
+  strava.athlete.listActivities({access_token: req.user.token, per_page: 200}, (err, payload, limits) => {
     if (err) {
       res.json(err)
     } else {
-      res.json({activities: payload, user: res.user})
+      res.json({activities: payload, user: req.user._json})
     }
   })
 });
+
 
 // GET /auth/strava
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -107,7 +104,7 @@ app.get('/api/activities', ensureAuthenticated, function(req, res) {
 //   redirecting the user to strava.com.  After authorization, Strava
 //   will redirect the user back to this application at /auth/strava/callback
 app.get('/auth/strava',
-  passport.authenticate('strava', { scope: ['activity:read_all,activity:write'] }),
+  passport.authenticate('strava', { scope: ['activity:read_all,activity:write,profile:read_all'] }),
   function(req, res){
     // The request will be redirected to Strava for authentication, so this
     // function will not be called.

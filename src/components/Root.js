@@ -24,6 +24,7 @@ const Root = () => {
 
   return (
     <div>
+      {user && user.bikes.map(bike => <p>{'Bike: '}{bike.name}</p>)}
       {activities ? <ActivitiesList activities={activities} /> : "loading..."}
     </div>
   );
