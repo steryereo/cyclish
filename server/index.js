@@ -97,6 +97,21 @@ app.get('/api/activities', ensureAuthenticated, function(req, res) {
   })
 });
 
+app.patch('/api/activities/:id', ensureAuthenticated, function(req, res) {
+  const id = req.params.id;
+  const gear_id = req.body.gear_id;
+
+  console.log('id', id, 'gear_id', gear_id)
+
+  strava.activities.update({access_token: req.user.token, id, gear_id}, (err, payload, limits) => {
+    if (err) {
+      res.json(err)
+    } else {
+      res.json(payload)
+    }
+  })
+});
+
 
 // GET /auth/strava
 //   Use passport.authenticate() as route middleware to authenticate the
