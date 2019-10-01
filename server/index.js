@@ -92,6 +92,7 @@ app.get('/api/activities', ensureAuthenticated, function(req, res) {
     if (err) {
       res.json(err)
     } else {
+      // TODO: each activity vhas a bunch of data. only send back the necessary stuff
       res.json({activities: payload, user: req.user._json})
     }
   })
@@ -101,12 +102,11 @@ app.patch('/api/activities/:id', ensureAuthenticated, function(req, res) {
   const id = req.params.id;
   const gear_id = req.body.gear_id;
 
-  console.log('id', id, 'gear_id', gear_id)
-
   strava.activities.update({access_token: req.user.token, id, gear_id}, (err, payload, limits) => {
     if (err) {
       res.json(err)
     } else {
+      // TODO: each activity has a bunch of data. only send back the necessary stuff
       res.json(payload)
     }
   })
