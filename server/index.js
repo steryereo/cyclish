@@ -54,7 +54,7 @@ passport.use(new StravaStrategy(stravaConfig, function(accessToken, refreshToken
 }));
 
 const port = process.env.PORT || 3000;
-const DIST_DIR = path.join(__dirname, '../dist');
+const DIST_DIR = path.join(__dirname, '../client/dist');
 const HTML_FILE = path.join(DIST_DIR, 'index.html');
 
 const app = express();
