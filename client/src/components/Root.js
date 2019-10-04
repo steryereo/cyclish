@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
 
+import '../styles/base.css';
+
 const handleChange = ({ e, activity, setIsBusy, updateActivity }) => {
   setIsBusy(activity, true);
 
@@ -34,7 +36,7 @@ const ActivityListItem = ({
   bikes,
   itemState = { isBusy: false, isChecked: false },
   onChange,
-  onCheck,
+  onCheck
 }) => (
   <li>
     <input
@@ -44,26 +46,13 @@ const ActivityListItem = ({
       disabled={itemState.isBusy}
       onChange={e => onCheck(e, activity)}
     />
-    <span className="date">
-      {format(new Date(activity.start_date_local), 'Pp')}
-    </span>
+    <span className="date">{format(new Date(activity.start_date_local), 'Pp')}</span>
     {activity.name}
-    <BikeSelect
-      activity={activity}
-      disabled={itemState.isBusy}
-      bikes={bikes}
-      onChange={onChange}
-    />
+    <BikeSelect activity={activity} disabled={itemState.isBusy} bikes={bikes} onChange={onChange} />
   </li>
 );
 
-const ActivitiesList = ({
-  activities = [],
-  bikes = [],
-  onChange,
-  onCheck,
-  activityStates,
-}) => (
+const ActivitiesList = ({ activities = [], bikes = [], onChange, onCheck, activityStates }) => (
   <ul>
     {activities.map(activity => (
       <ActivityListItem
@@ -82,7 +71,7 @@ const getFullName = ({ firstname, lastname }) => `${firstname} ${lastname}`;
 
 const UserCard = ({ user }) => (
   <div>
-    <img alt={getFullName(user)} />
+    <img alt={getFullName(user)} src={user.profile_medium} />
     <h4>{getFullName(user)}</h4>
   </div>
 );
@@ -98,7 +87,7 @@ const Root = () => {
       initActivities.reduce(
         (acc, activity) => ({
           ...acc,
-          [activity.id]: { isBusy: false, isChecked: false },
+          [activity.id]: { isBusy: false, isChecked: false }
         }),
         {}
       )
@@ -108,20 +97,17 @@ const Root = () => {
     const activityState = activityStates[activity.id] || {};
     setActivityStates({
       ...activityStates,
-      [activity.id]: { ...activityState, [flag]: value },
+      [activity.id]: { ...activityState, [flag]: value }
     });
   };
 
-  const setIsBusy = (activity, isBusy) =>
-    setActivityStateFlag(activity, 'isBusy', isBusy);
+  const setIsBusy = (activity, isBusy) => setActivityStateFlag(activity, 'isBusy', isBusy);
   const setIsChecked = (activity, isChecked) =>
     setActivityStateFlag(activity, 'isChecked', isChecked);
 
   const updateActivity = updatedActivity =>
     setActivities(
-      activities.map(activity =>
-        activity.id === updatedActivity.id ? updatedActivity : activity
-      )
+      activities.map(activity => (activity.id === updatedActivity.id ? updatedActivity : activity))
     );
 
   useEffect(() => {
@@ -146,9 +132,7 @@ const Root = () => {
         activityStates={activityStates}
         bikes={user.bikes}
         onCheck={(e, activity) => setIsChecked(activity, e.target.checked)}
-        onChange={(e, activity) =>
-          handleChange({ e, activity, setIsBusy, updateActivity })
-        }
+        onChange={(e, activity) => handleChange({ e, activity, setIsBusy, updateActivity })}
       />
     </div>
   );

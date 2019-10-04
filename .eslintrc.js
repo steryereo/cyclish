@@ -9,9 +9,17 @@ module.exports = {
     "ecmaVersion": 2020,
   },
   "env": {
-    "browser": true
+    "browser": true,
+    "node": true
   },
   "rules": {
+    "camelcase": [
+      1,
+      {
+        "ignoreDestructuring": true,
+        "properties": "never"
+      }
+    ],
     "no-shadow": 0,
     "react/prop-types": 0,
     "react/jsx-filename-extension": [
@@ -23,12 +31,15 @@ module.exports = {
         ]
       }
     ],
+    "no-unused-vars": [
+      1,
+      { "args": "none" }
+    ],
     "prettier/prettier": [
       "warn",
       {
-        "trailingComma": "es5",
         "singleQuote": true,
-        "printWidth": 80,
+        "printWidth": 100,
       }
     ],
     "react-hooks/rules-of-hooks": "error",
