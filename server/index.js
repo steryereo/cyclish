@@ -62,13 +62,10 @@ passport.use(stravaStrategy);
 
 const port = process.env.PORT || 3000;
 const DIST_DIR = path.join(__dirname, '../client/dist');
-const HTML_FILE = path.join(DIST_DIR, 'index.html');
 
 const app = express();
 
 // configure Express
-app.set('views', `${__dirname}/views`);
-app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -89,11 +86,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', ensureAuthenticated, (req, res) => {
-  res.sendFile(HTML_FILE);
+  res.sendFile(path.join(DIST_DIR, 'index.html'));
 });
 
 app.get('/login', (req, res) => {
-  res.render('login', { user: req.user });
+  res.sendFile(path.join(DIST_DIR, 'login.html'));
 });
 
 app.get('/api/activities', ensureAuthenticated, (req, res) => {

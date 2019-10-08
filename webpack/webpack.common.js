@@ -1,5 +1,5 @@
 const path = require('path');
-const HtmlWebPackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
@@ -10,14 +10,22 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new HtmlWebPackPlugin({
-      title: 'Strava ride updater',
-      template: path.join(__dirname, '../client/src/index.html'),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, '../client/src/templates/index.pug'),
       filename: path.join(__dirname, '../client/dist/index.html')
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, '../client/src/templates/login.pug'),
+      filename: path.join(__dirname, '../client/dist/login.html'),
+      inject: false
     })
   ],
   module: {
     rules: [
+      {
+        test: /\.pug$/,
+        use: 'pug-loader'
+      },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
