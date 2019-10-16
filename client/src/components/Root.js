@@ -67,7 +67,7 @@ const Root = () => {
   if (error) return error;
 
   return (
-    <div>
+    <div className="container mx-auto">
       <UserCard user={user} />
       <ActivityList
         activities={activities}
