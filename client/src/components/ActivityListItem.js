@@ -10,7 +10,7 @@ const ActivityListItem = ({
   onChange,
   onCheck
 }) => (
-  <li>
+  <li className="py-2">
     <input
       type="checkbox"
       value={activity.id}
@@ -18,9 +18,18 @@ const ActivityListItem = ({
       disabled={itemState.isBusy}
       onChange={e => onCheck(e, activity)}
     />
-    <span className="date">{format(new Date(activity.start_date_local), 'Pp')}</span>
-    {activity.name}
-    <BikeSelect activity={activity} disabled={itemState.isBusy} bikes={bikes} onChange={onChange} />
+    <span className="bg-gray-500 text-white rounded-full px-2 py-1 flex-auto ml-2 text-xs">
+      {format(new Date(activity.start_date_local), 'Pp')}
+    </span>
+    <span className="flex-auto mx-2 text-gray-900">{activity.name}</span>
+    <span className="flex-auto">
+      <BikeSelect
+        activity={activity}
+        disabled={itemState.isBusy}
+        bikes={bikes}
+        onChange={onChange}
+      />
+    </span>
   </li>
 );
 

@@ -67,15 +67,17 @@ const Root = () => {
   if (error) return error;
 
   return (
-    <div className="container mx-auto">
-      <UserCard user={user} />
-      <ActivityList
-        activities={activities}
-        activityStates={activityStates}
-        bikes={user.bikes}
-        onCheck={(e, activity) => setIsChecked(activity, e.target.checked)}
-        onChange={(e, activity) => handleBikeChange({ e, activity, setIsBusy, updateActivity })}
-      />
+    <div className="container mx-auto flex flex-row justify-center p-10">
+      <div>
+        <UserCard user={user} />
+        <ActivityList
+          activities={activities}
+          activityStates={activityStates}
+          bikes={user.bikes}
+          onCheck={(e, activity) => setIsChecked(activity, e.target.checked)}
+          onChange={(e, activity) => handleBikeChange({ e, activity, setIsBusy, updateActivity })}
+        />
+      </div>
     </div>
   );
 };
