@@ -41,6 +41,10 @@ module.exports = {
         use: {
           loader: 'babel-loader'
         }
+      },
+      {
+        test: /\.(png|svg|jpg|gif|xml|ico|webmanifest)$/,
+        use: ['file-loader']
       }
     ]
   }
