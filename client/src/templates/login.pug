@@ -4,5 +4,10 @@ block head
   link(rel="stylesheet", href="styles.css")
 
 block layout-content
-  .fixed.flex.h-full.w-full.flex-row.items-center.justify-center.tracking-wider
-    a.bg-orange-500.rounded.p-4.text-white(href="/auth/strava") Login with Strava
+  .fixed.flex.h-full.w-full.flex-col.items-center.justify-center
+    div
+      header
+        h1.uppercase.text-strava-gray.text-6xl.font-bold Cyclish
+      a.login-button(href="/auth/strava")
+        img.w-auto(src=require('../assets/btn_strava_connectwith_orange.svg') alt="Connect with strava")
+    img.absolute.bottom-0.right-0.w-48.max-w-full.m-2(src=require('../assets/api_logo_pwrdBy_strava_horiz_gray.svg') alt="Powered by strava")

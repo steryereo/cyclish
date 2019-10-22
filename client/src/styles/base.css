@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
+
+/* Making this its own class to work with pug. do something else if more pseudo classes are necessary in pug */
+.login-button:focus {
+  @apply outline-none bg-strava-gray-light rounded;
+}
+
 @tailwind utilities;

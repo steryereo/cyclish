@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
+// import poweredByStravaHorizontal from 'api_logo_pwrdBy_strava_horiz_gray.svg';
 import ActivityList from './ActivityList';
+import ListActions from './ListActions';
 import UserCard from './UserCard';
 
 import '../styles/base.css';
@@ -70,6 +72,7 @@ const Root = () => {
     <div className="container mx-auto flex flex-row justify-center p-10">
       <div>
         <UserCard user={user} />
+        <ListActions activityStates={activityStates} />
         <ActivityList
           activities={activities}
           activityStates={activityStates}

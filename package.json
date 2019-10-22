@@ -1,7 +1,7 @@
 {
-  "name": "strava-ride-updater",
+  "name": "cyclish",
   "version": "1.0.0",
-  "description": "",
+  "description": "update your gear in multiple strava rides at once",
   "main": "index.js",
   "dependencies": {
     "@babel/core": "^7.6.0",
