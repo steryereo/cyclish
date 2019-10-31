@@ -126,18 +126,6 @@ const reflectUpdateActivity = async params => {
   }
 };
 
-app.patch('/api/activities/:id', ensureAuthenticated, async (req, res) => {
-  const { id } = req.params;
-  const { gear_id } = req.body;
-
-  try {
-    const payload = await updateActivity({ access_token: req.user.token, id, gear_id });
-    res.json(payload);
-  } catch (err) {
-    res.json(err);
-  }
-});
-
 app.patch('/api/activities/batch', ensureAuthenticated, async (req, res) => {
   const { activity_ids, gear_id } = req.body;
 
@@ -148,7 +136,6 @@ app.patch('/api/activities/batch', ensureAuthenticated, async (req, res) => {
 
   const updates = requests.reduce(
     (acc, update, idx) => {
-      const id = activity_ids[idx];
       if (update.status === 'fulfilled') {
         acc.updated[update.value.id] = update.value; // TODO: maybe only return the id instead of the whole object
       } else {
@@ -160,6 +147,19 @@ app.patch('/api/activities/batch', ensureAuthenticated, async (req, res) => {
   );
 
   res.json(updates);
+});
+
+app.patch('/api/activities/:id', ensureAuthenticated, async (req, res) => {
+  const { id } = req.params;
+  const { gear_id } = req.body;
+
+  try {
+    const payload = await updateActivity({ access_token: req.user.token, id, gear_id });
+
+    res.json(payload);
+  } catch (err) {
+    res.json(err);
+  }
 });
 
 // GET /auth/strava

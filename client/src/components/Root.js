@@ -20,6 +20,19 @@ const handleBikeChange = ({ e, activity, setIsBusy, updateActivity }) => {
     .catch(err => console.error(err));
 };
 
+const batchUpdateBikes = ({ e, activityIds, gearId, setIsBusy, updateActivities }) => {
+  setIsBusy(activityIds, true);
+
+  axios
+    .patch('/api/activities/batch', { gear_id: gearId, activity_ids: activityIds })
+    .then(({ data }) => {
+      // updateActivity(data);
+      console.log(data);
+      setIsBusy(activityIds, false);
+    })
+    .catch(err => console.error(err));
+};
+
 const Root = () => {
   const [activities, setActivities] = useState(null);
   const [user, setUser] = useState(null);
@@ -45,7 +58,19 @@ const Root = () => {
     });
   };
 
-  const setIsBusy = (activity, isBusy) => setActivityStateFlag(activity, 'isBusy', isBusy);
+  const setActivityStateFlags = (activityIds, flag, value) => {
+    const updatedActivityStates = activityIds.reduce((acc, id) => {
+      const activityState = activityStates[id] || {};
+      return { ...acc, [id]: { ...activityState, [flag]: value } };
+    }, activityStates);
+
+    setActivityStates(updatedActivityStates);
+  };
+
+  const setIsBusy = (activity, isBusy) =>
+    Array.isArray(activity)
+      ? setActivityStateFlags(activity, 'isBusy', isBusy)
+      : setActivityStateFlag(activity, 'isBusy', isBusy);
   const setIsChecked = (activity, isChecked) =>
     setActivityStateFlag(activity, 'isChecked', isChecked);
 
@@ -73,6 +98,18 @@ const Root = () => {
       <div>
         <UserCard user={user} />
         <ListActions activityStates={activityStates} />
+        <button
+          className="rounded bg-strava-gray-light px-1"
+          onClick={e => {
+            const activityIds = Object.keys(activityStates).filter(
+              id => activityStates[id] && activityStates[id].isChecked
+            );
+            batchUpdateBikes({ e, activityIds, gearId: user.bikes[0].id, setIsBusy });
+          }}
+          type="button"
+        >
+          test update checked
+        </button>
         <ActivityList
           activities={activities}
           activityStates={activityStates}
