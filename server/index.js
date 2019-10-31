@@ -112,34 +112,52 @@ const updateActivity = params =>
   new Promise((resolve, reject) => {
     strava.activities.update(params, (err, payload, limits) => {
       console.log('limits', limits);
-      if (err) return resolve(err);
+      if (err) return reject(err);
       return resolve(payload);
     });
   });
+
+const reflectUpdateActivity = async params => {
+  try {
+    const payload = await updateActivity(params);
+    return { status: 'fulfilled', value: payload };
+  } catch (error) {
+    return { status: 'rejected', reason: error, id: params.id };
+  }
+};
 
 app.patch('/api/activities/:id', ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
   const { gear_id } = req.body;
 
-  strava.activities.update({ access_token: req.user.token, id, gear_id }, (err, payload, limits) => {
-    if (err) return res.json(err)
-    return res.json(payload);
+  try {
+    const payload = await updateActivity({ access_token: req.user.token, id, gear_id });
+    res.json(payload);
+  } catch (err) {
+    res.json(err);
   }
 });
 
-app.patch('/api/activities/batch', ensureAuthenticated, (req, res) => {
+app.patch('/api/activities/batch', ensureAuthenticated, async (req, res) => {
   const { activity_ids, gear_id } = req.body;
 
   // TODO: handle rate limiting
-  const requests = await allSettled(activity_ids.map(id => updateActivity({ access_token: req.user.token, id, gear_id })));
-  const updates = requests.reduce((acc, update) => {
-    if (update.status === "fulfilled") {
-      acc.updated[id] = update.value // TODO: maybe only return the id instead of the whole object
-    } else {
-      acc.errors[id] = update.reason
-    }
-    return acc;
-  }, {errors: {}, updated: {}});
+  const requests = await Promise.all(
+    activity_ids.map(id => reflectUpdateActivity({ access_token: req.user.token, id, gear_id }))
+  );
+
+  const updates = requests.reduce(
+    (acc, update, idx) => {
+      const id = activity_ids[idx];
+      if (update.status === 'fulfilled') {
+        acc.updated[update.value.id] = update.value; // TODO: maybe only return the id instead of the whole object
+      } else {
+        acc.errors[update.id] = update.reason;
+      }
+      return acc;
+    },
+    { errors: {}, updated: {} }
+  );
 
   res.json(updates);
 });
