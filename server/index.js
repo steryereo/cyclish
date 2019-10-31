@@ -95,33 +95,53 @@ app.get('/login', (req, res) => {
 
 app.get('/api/activities', ensureAuthenticated, (req, res) => {
   strava.athlete.listActivities(
-    { access_token: req.user.token, per_page: 200 },
+    { access_token: req.user.token, per_page: 20 },
     (err, payload, limits) => {
       if (err) {
         res.json(err);
       } else {
-        // TODO: each activity vhas a bunch of data. only send back the necessary stuff
+        // TODO: each activity has a bunch of data. only send back the necessary stuff
         res.json({ activities: payload, user: req.user._json }); // eslint-disable-line
       }
     }
   );
 });
 
-app.patch('/api/activities/:id', ensureAuthenticated, (req, res) => {
+// Helper function... move this somewhere
+const updateActivity = params =>
+  new Promise((resolve, reject) => {
+    strava.activities.update(params, (err, payload, limits) => {
+      console.log('limits', limits);
+      if (err) return resolve(err);
+      return resolve(payload);
+    });
+  });
+
+app.patch('/api/activities/:id', ensureAuthenticated, async (req, res) => {
   const { id } = req.params;
   const { gear_id } = req.body;
 
-  strava.activities.update(
-    { access_token: req.user.token, id, gear_id },
-    (err, payload, limits) => {
-      if (err) {
-        res.json(err);
-      } else {
-        // TODO: each activity has a bunch of data. only send back the necessary stuff
-        res.json(payload);
-      }
+  strava.activities.update({ access_token: req.user.token, id, gear_id }, (err, payload, limits) => {
+    if (err) return res.json(err)
+    return res.json(payload);
+  }
+});
+
+app.patch('/api/activities/batch', ensureAuthenticated, (req, res) => {
+  const { activity_ids, gear_id } = req.body;
+
+  // TODO: handle rate limiting
+  const requests = await allSettled(activity_ids.map(id => updateActivity({ access_token: req.user.token, id, gear_id })));
+  const updates = requests.reduce((acc, update) => {
+    if (update.status === "fulfilled") {
+      acc.updated[id] = update.value // TODO: maybe only return the id instead of the whole object
+    } else {
+      acc.errors[id] = update.reason
     }
-  );
+    return acc;
+  }, {errors: {}, updated: {}});
+
+  res.json(updates);
 });
 
 // GET /auth/strava
