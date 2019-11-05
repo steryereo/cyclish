@@ -20,14 +20,14 @@ const handleBikeChange = ({ e, activity, setIsBusy, updateActivity }) => {
     .catch(err => console.error(err));
 };
 
-const batchUpdateBikes = ({ e, activityIds, gearId, setIsBusy, updateActivities }) => {
+const batchUpdateBikes = ({ activityIds, gearId, setIsBusy, updateActivities }) => {
   setIsBusy(activityIds, true);
 
   axios
     .patch('/api/activities/batch', { gear_id: gearId, activity_ids: activityIds })
-    .then(({ data }) => {
-      // updateActivity(data);
-      console.log(data);
+    .then(({ data: { errors, updated } }) => {
+      updateActivities(updated);
+      console.log(errors, updated);
       setIsBusy(activityIds, false);
     })
     .catch(err => console.error(err));
@@ -49,6 +49,10 @@ const Root = () => {
         {}
       )
     );
+
+  const updateActivities = updatedActivityMap => {
+    setActivities(activities.map(activity => updatedActivityMap[activity.id] || activity));
+  };
 
   const setActivityStateFlag = (activity, flag, value) => {
     const activityState = activityStates[activity.id] || {};
@@ -97,19 +101,13 @@ const Root = () => {
     <div className="container mx-auto flex flex-row justify-center p-10">
       <div>
         <UserCard user={user} />
-        <ListActions activityStates={activityStates} />
-        <button
-          className="rounded bg-strava-gray-light px-1"
-          onClick={e => {
-            const activityIds = Object.keys(activityStates).filter(
-              id => activityStates[id] && activityStates[id].isChecked
-            );
-            batchUpdateBikes({ e, activityIds, gearId: user.bikes[0].id, setIsBusy });
-          }}
-          type="button"
-        >
-          test update checked
-        </button>
+        <ListActions
+          activityStates={activityStates}
+          bikes={user.bikes}
+          onUpdateClick={({ activityIds, gearId, setIsBusy }) =>
+            batchUpdateBikes({ activityIds, gearId, setIsBusy, updateActivities })
+          }
+        />
         <ActivityList
           activities={activities}
           activityStates={activityStates}

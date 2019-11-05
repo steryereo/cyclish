@@ -24,10 +24,10 @@ const ActivityListItem = ({
     <span className="flex-auto mx-2 text-gray-900">{activity.name}</span>
     <span className="flex-auto">
       <BikeSelect
-        activity={activity}
+        currentBikeId={activity.gear_id}
         disabled={itemState.isBusy}
         bikes={bikes}
-        onChange={onChange}
+        onChange={e => onChange(e, activity)}
       />
     </span>
   </li>
