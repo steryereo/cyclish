@@ -1,7 +1,11 @@
+const dotenv = require('dotenv');
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+const env = dotenv.config().parsed;
 
 module.exports = {
   entry: './client/src/index.js',
@@ -23,6 +27,9 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'styles.css',
       chunkFilename: 'styles.css'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.GOOGLE_MAPS_API_KEY': JSON.stringify(env.GOOGLE_MAPS_API_KEY)
     })
   ],
   module: {

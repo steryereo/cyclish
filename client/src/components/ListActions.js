@@ -13,7 +13,7 @@ const ListActions = ({ activityStates, onUpdateClick, bikes }) => {
 
   return (
     <div className="sticky top-0 w-full p-2 bg-white">
-      {`update ${checkedIds.length} rides `}
+      {`${checkedIds.length} rides selected`}
       <BikeSelect
         bikes={bikes}
         currentBikeId={currentBikeId}

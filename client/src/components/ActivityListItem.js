@@ -3,6 +3,9 @@ import React from 'react';
 import { format } from 'date-fns';
 import BikeSelect from './BikeSelect';
 
+const getMapImgSrc = polyline =>
+  `https://maps.googleapis.com/maps/api/staticmap?size=100x100&maptype=terrain&path=enc:${polyline}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+
 const ActivityListItem = ({
   activity,
   bikes,
@@ -30,6 +33,10 @@ const ActivityListItem = ({
         onChange={e => onChange(e, activity)}
       />
     </span>
+    <img
+      alt={`Map of activity: ${activity.name}`}
+      src={getMapImgSrc(activity.map.summary_polyline)}
+    />
   </li>
 );
 
