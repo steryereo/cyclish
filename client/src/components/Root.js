@@ -99,7 +99,7 @@ const Root = () => {
 
   return (
     <div className="container mx-auto flex flex-row justify-center p-10">
-      <div>
+      <div className="w-full max-w-3xl">
         <UserCard user={user} />
         <ListActions
           activityStates={activityStates}

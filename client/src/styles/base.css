@@ -6,4 +6,9 @@
   @apply outline-none bg-strava-gray-light rounded;
 }
 
+.icon-baseline-fix {
+  position: relative;
+  top: .125em;
+}
+
 @tailwind utilities;
